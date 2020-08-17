@@ -77,7 +77,7 @@ SELECT eventownerid, eventownerusername, eventid, eventtitle, eventdate, eventst
 RETURNING usersandevents;
 `;
 
-db.query(queries.addNewEventToJoinTable).then(data => console.log(data.rows));
+// db.query(queries.addNewEventToJoinTable).then(data => console.log(data.rows));
 
 
 // USERS ADDS THEMSELVES TO OTHER PEOPLE'S EVENTS
@@ -98,10 +98,16 @@ queries.selectEventAttendees = `SELECT * FROM usersandevents WHERE eventtitle=$1
 // db.query(queries.selectEventAttendees, minchanWeddingTitle).then(data => console.log(data.rows));
 
 
-// GRAB EVENT'S ATTENDEES' USERINFO
-queries.selectEventAttendees = `SELECT * FROM usersandevents WHERE eventtitle=$1`;
+queries.addComments = `
+INSERT INTO eventsandcomments (username, eventtitle, messagetext, messagedate, messagetime)
+VALUES($1, $2, $3, $4, $5)
+`;
 
-
+queries.getComments = `
+SELECT u.username, u.profilephoto, e.messagetext, e.messagedate, e.messagetime
+FROM users u
+JOIN eventsandcomments e
+`;
 
 
 
