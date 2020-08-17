@@ -1,12 +1,20 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+<<<<<<< HEAD
+=======
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+>>>>>>> 27ed1fa906359ff1c6a0b7658fb2ae0a667a663f
 
 module.exports = {
   entry: './client/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
+<<<<<<< HEAD
     publicPath: '/dist/',
     filename: 'bundle.js',
+=======
+    filename: 'bundle.js'
+>>>>>>> 27ed1fa906359ff1c6a0b7658fb2ae0a667a663f
   },
   devtool: 'eval-source-map',
   mode: process.env.NODE_ENV,
@@ -14,7 +22,8 @@ module.exports = {
     rules: [
       {
         test: /.(css|scss)$/,
-        exclude: /node_modules/,
+        // include: [path.resolve(__dirname, '/node_modules/react-datepicker/'), path.resolve(__dirname, '/node_modules/bootstrap/')],
+        // exclude: /node_modules/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
@@ -28,7 +37,7 @@ module.exports = {
         },
       },
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
         use: [
           {
             // loads files as base64 encoded data url if image file is less than set limit
@@ -43,8 +52,12 @@ module.exports = {
     ]
   },
   devServer: {
+<<<<<<< HEAD
+=======
+    port: 8080,
+>>>>>>> 27ed1fa906359ff1c6a0b7658fb2ae0a667a663f
     // contentBase: path.resolve(__dirname, '/dist'),
-    publicPath: '/dist/',
+    // publicPath: '/dist/',
     proxy: {
       '/api/**': {
         target: 'http://localhost:3000',
@@ -61,5 +74,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './client/index.html',
     }),
+    new MiniCssExtractPlugin() 
   ],
 };

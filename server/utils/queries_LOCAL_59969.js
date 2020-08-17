@@ -107,8 +107,6 @@ queries.getComments = `
 SELECT u.username, u.profilephoto, e.messagetext, e.messagedate, e.messagetime
 FROM users u
 JOIN eventsandcomments e
-ON u.username=e.username
-WHERE e.eventitle
 `;
 
 
