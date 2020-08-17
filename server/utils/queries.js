@@ -103,10 +103,35 @@ RETURNING eventid
 // queries.selectEventAttendees = `SELECT * FROM usersandevents WHERE eventtitle=$1`;
 queries.selectEventAttendees = `SELECT * FROM usersandevents WHERE eventtitle=$1`;
 
-// let minchanWeddingTitle = ['minchan wedding'];
+// let minchanWeddingTitle = ['Minchan Birthday'];
 // db.query(queries.selectEventAttendees, minchanWeddingTitle).then(data => console.log(data.rows));
 
 
+queries.addComments = `
+INSERT INTO eventsandmessages (username, eventtitle, messagetext, messagedate, messagetime)
+VALUES($1, $2, $3, $4, $5)
+WHERE eventtitle=$2 AND username=$1
+`;
+
+/**
+INSERT INTO eventsandmessages (username, eventtitle, messagetext, messagedate, messagetime)
+VALUES('lumie.song@gmail.com', 'Minchan Birthday', 'Custom Message Text', '2020-08-17', '05:00:01')
+
+INSERT INTO eventsandmessages (username, eventtitle, messagetext, messagedate, messagetime)
+VALUES('minchanjun@gmail.com', 'Minchan Birthday', 'so excited to see everyone at my birthday', '2020-08-18', '10:00:01')
+ */
+
+// GET COMMENTS FOR EVENTS
+queries.getMessages = `
+SELECT u.userid, u.username, u.profilephoto, em.eventtitle, em.messagetext, em.messagedate, em.messagetime
+FROM users u
+JOIN eventsandmessages em
+ON u.username=em.username
+WHERE em.eventtitle=$1
+`;
+// WHERE em.eventtitle=$1
+// let minchanBirthdayEventTitle = ['Minchan Birthday'];
+// db.query(queries.selectEventComments, minchanBirthdayEventTitle).then(data => console.log(data.rows));
 
 
 // CLEAR ALL TABLES & DATA

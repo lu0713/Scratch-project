@@ -44,7 +44,7 @@ module.exports = {
     ]
   },
   devServer: {
-    port: 8080,
+    // port: 8080,
     // contentBase: path.resolve(__dirname, '/dist'),
     // publicPath: '/dist/',
     proxy: {

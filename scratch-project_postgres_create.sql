@@ -66,7 +66,7 @@ CREATE TABLE events
 
 
 
--- CREATE TABLE eventsandcomments
+-- CREATE TABLE eventsandmessages
 --   (
 --     "uselessid" serial PRIMARY KEY,
 --     "username" varchar NOT NULL,
@@ -79,10 +79,10 @@ CREATE TABLE events
 --   );
 
 
---   SELECT setval('eventsandcomments_uselessid_seq', 1, false);
+--   SELECT setval('eventsandmessages_uselessid_seq', 1, false);
 
 
--- DROP TABLE EVENTSANDCOMMENTS;
+-- DROP TABLE EVENTSANDMESSAGES;
 -- DROP TABLE USERSANDEVENTS;
 -- DROP TABLE EVENTS;
 -- DROP TABLE USERS;

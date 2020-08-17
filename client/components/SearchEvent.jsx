@@ -78,23 +78,14 @@ export default function SearchEvent({ searchEvent, events }) {
 
   useEffect(() => {
     axios.get('/api/events')
-    .then(res => {
-<<<<<<< HEAD
-      console.log('SearchEvent res, ', res);
-=======
->>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
-      exampleEventData = res.data;
-    })
+      .then(res => {
+        exampleEventData = res.data;
+      })
   });
 
   const handleChange = (e) => {
     const regex = new RegExp(e.target.value.trim(), "gi");
-<<<<<<< HEAD
-    const eventTitles = events.map(event => event.title)
-    console.log(eventTitles)
-=======
     const eventTitles = events.map(event => event.eventtitle)
->>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
     updateResults(exampleEventData.filter((event) => event.eventtitle.match(regex) && !eventTitles.includes(event.eventtitle)))
   };
 
@@ -132,7 +123,7 @@ export default function SearchEvent({ searchEvent, events }) {
         <FontAwesomeIcon className="mx-auto faSearchPlus" icon={faSearchPlus} size="4x" />
         <p>Search Events</p>
       </div>
-      
+
       <Modal show={show} onHide={handleClose} animation={true}>
         <Modal.Header closeButton>
           <Modal.Title>Search for an Event</Modal.Title>
@@ -145,7 +136,7 @@ export default function SearchEvent({ searchEvent, events }) {
               <Form.Control name='title' onChange={handleChange} required type="text" placeholder="Enter title" />
             </Form.Group>
             <div className='searchResults'>
-            {btnResults}
+              {btnResults}
 
             </div>
 

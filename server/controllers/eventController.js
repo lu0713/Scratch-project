@@ -202,17 +202,17 @@ eventController.allEvents = (req, res, next) => {
       if (!data.rows) {
         res.locals.allEventsInfo = [];
       } else {
-        // console.log('evenData', data.rows)
+        console.log('eventData', data.rows)
         const eventAndUserDataQueryString = queries.getAttendeeEvents;
         db.query(eventAndUserDataQueryString).then(eventAndUserData => {
-          // console.log('eventAndUserData', eventAndUserData.rows)
+          console.log('eventAndUserData', eventAndUserData.rows)
           const mergedTable = data.rows.map(e => {
             const attendees = eventAndUserData.rows.filter(entry => entry.eventid == e.eventid)
             e.attendees = attendees;
             return e;
           })
           res.locals.allEventsInfo = mergedTable
-          // console.log("merged table", res.locals.allEventsInfo)
+          console.log("merged table", res.locals.allEventsInfo)
           return next();
         })
       }
@@ -290,5 +290,58 @@ eventController.filterForUser = (req, res, next) => {
   res.locals.allEventsInfo = filtered;
   return next();
 }
+
+eventController.getMessages = (req, res, next) => {
+  let allEventTitles = [];
+  const allEvents = res.locals.allEventsInfo;
+
+  for (let i = 0; i < allEvents.length; i++) {
+    allEventTitles.push(allEvents[i].eventtitle)
+  }
+  console.log('allEventTitles: ', allEventTitles);
+
+  for (let i = 0; i < allEventTitles.length; i++) {
+    const queryString = queries.getMessages;
+    const queryValues = [allEventTitles[i]];
+  }
+
+
+
+  let desiredEventObj;
+  let desiredEventObjIndex;
+
+  for (let j = 0; j < allEvents.length; j++) {
+    let eventObj = allEvents[j];
+    if (eventObj.eventtitle === eventtitle) {
+      desiredEventObj = eventObj;
+      console.log('desiredEventObj: ', desiredEventObj)
+      desiredEventObjIndex = j;
+      console.log('desiredEventObjIndex: ', desiredEventObjIndex)
+    }
+  }
+
+  // getMessages, eventtitle
+  db.query(queryString, queryValues)
+    .then(data => {
+      if (data.rows[0]) {
+        for (let i = 0; i < data.rows.length; i++) {
+          let messageObj = data.rows[i];
+          if (messageObj.eventtitle === eventtitle) {
+            desiredEventObj.push(messageObj)
+          }
+        }
+        res.locals.allEventsInfo[desiredEventObjIndex] = desiredEventObjIndex;
+        console.log('res.locals.allEventsInfo: ', res.locals.allEventsInfo)
+      }
+    })
+    .catch(err => {
+      return next({
+        log: `Error occurred with queries.getAllEvents OR eventController.allEvents middleware: ${err}`,
+        message: { err: "An error occured with SQL when retrieving all events information." },
+      });
+    })
+};
+
+
 
 module.exports = eventController;

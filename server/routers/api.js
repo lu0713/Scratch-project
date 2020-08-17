@@ -36,6 +36,7 @@ router.get('/info',
   fileController.getUser,
   eventController.allEvents, // COMMENT OUT IF IT BREAKS
   eventController.filterForUser, // COMMENT OUT IF IT BREAKS
+  // eventController.getMessages, // ADDING IN MESSAGES
   // eventController.getFullEvents,
   // eventController.getAllAttendees,
   // eventController.getUserDetail,
@@ -80,6 +81,7 @@ router.post('/add',
 
 router.get('/events', // SWITCH THIS TO A GET REQUEST!!
   eventController.allEvents,
+  // eventController.getMessages, // ADDING IN MESSAGES
   (req, res) => {
     return res.status(200).json(res.locals.allEventsInfo);
   }
