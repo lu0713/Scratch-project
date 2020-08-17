@@ -12,10 +12,17 @@ export default function Content({ content }) {
       return (
         <div className="messageBox" key={`Content${index}`}>
           <div className="userMessage">
+<<<<<<< HEAD
             <img src={message.profilePicture}></img>
           </div>
           <div className="message" key={`Content${index}`} >
             <p className="messageName">{message.firstName} {message.lastName}</p>
+=======
+            <img src={message.profilephoto}></img>
+          </div>
+          <div className="message" key={`Content${index}`} >
+            <p className="messageName">{message.firstname} {message.lastname}</p>
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
             <p className="messageText">{message.text}</p>
             <p className="messageTime">{message.time}</p>
           </div>

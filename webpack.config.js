@@ -1,20 +1,12 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-<<<<<<< HEAD
-=======
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
->>>>>>> 27ed1fa906359ff1c6a0b7658fb2ae0a667a663f
 
 module.exports = {
   entry: './client/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-<<<<<<< HEAD
-    publicPath: '/dist/',
-    filename: 'bundle.js',
-=======
     filename: 'bundle.js'
->>>>>>> 27ed1fa906359ff1c6a0b7658fb2ae0a667a663f
   },
   devtool: 'eval-source-map',
   mode: process.env.NODE_ENV,
@@ -52,10 +44,7 @@ module.exports = {
     ]
   },
   devServer: {
-<<<<<<< HEAD
-=======
     port: 8080,
->>>>>>> 27ed1fa906359ff1c6a0b7658fb2ae0a667a663f
     // contentBase: path.resolve(__dirname, '/dist'),
     // publicPath: '/dist/',
     proxy: {
@@ -74,6 +63,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './client/index.html',
     }),
-    new MiniCssExtractPlugin() 
+    new MiniCssExtractPlugin()
   ],
 };

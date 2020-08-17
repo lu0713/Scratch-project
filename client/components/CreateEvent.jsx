@@ -9,9 +9,15 @@ import {Modal, Button, Form, Card} from 'react-bootstrap';
 export default function CreateEvent({addEvent}) {
   /* Form data */
   const initialFormData = Object.freeze({
+<<<<<<< HEAD
     title: "",
     location: "",
     description: "",
+=======
+    eventtitle: "",
+    eventlocation: "",
+    eventdetails: "",
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
   });
   
   const [formData, updateFormData] = React.useState(initialFormData);
@@ -29,11 +35,19 @@ export default function CreateEvent({addEvent}) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+<<<<<<< HEAD
     const date = dateTime.toDateString();
     let time = dateTime.toTimeString();
     time = time.split(" ")[0];
     // ... submit to API or something
     addEvent({ ...formData, date, time });
+=======
+    const eventdate = dateTime.toDateString();
+    let time = dateTime.toTimeString();
+    let eventstarttime = time.split(" ")[0];
+    // ... submit to API or something
+    addEvent({ ...formData, eventdate, eventstarttime });
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
     handleClose();
   };
   
@@ -69,17 +83,29 @@ export default function CreateEvent({addEvent}) {
           <Form>
             <Form.Group controlId="formEventTitle">
               <Form.Label>Event Title</Form.Label>
+<<<<<<< HEAD
               <Form.Control name='title' onChange={handleChange} required type="text" placeholder="Enter title" />
+=======
+              <Form.Control name='eventtitle' onChange={handleChange} required type="text" placeholder="Enter title" />
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
             </Form.Group>
 
             <Form.Group controlId="formEventLocation">
               <Form.Label>Location</Form.Label>
+<<<<<<< HEAD
               <Form.Control name='location' onChange={handleChange} required type="text" placeholder="Enter location" />
+=======
+              <Form.Control name='eventlocation' onChange={handleChange} required type="text" placeholder="Enter location" />
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
             </Form.Group>
 
             <Form.Group controlId="formEventDescription">
               <Form.Label>Event Description</Form.Label>
+<<<<<<< HEAD
               <Form.Control name='description' onChange={handleChange} required as="textarea" placeholder="Enter description" />
+=======
+              <Form.Control name='eventdetails' onChange={handleChange} required as="textarea" placeholder="Enter description" />
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
             </Form.Group>
 
             <Form.Group controlId="formEventDescription">

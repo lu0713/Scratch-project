@@ -79,15 +79,22 @@ export default function SearchEvent({ searchEvent, events }) {
   useEffect(() => {
     axios.get('/api/events')
     .then(res => {
+<<<<<<< HEAD
       console.log('SearchEvent res, ', res);
+=======
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
       exampleEventData = res.data;
     })
   });
 
   const handleChange = (e) => {
     const regex = new RegExp(e.target.value.trim(), "gi");
+<<<<<<< HEAD
     const eventTitles = events.map(event => event.title)
     console.log(eventTitles)
+=======
+    const eventTitles = events.map(event => event.eventtitle)
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
     updateResults(exampleEventData.filter((event) => event.eventtitle.match(regex) && !eventTitles.includes(event.eventtitle)))
   };
 

@@ -95,10 +95,17 @@ export default function MainContainer() {
     .then((res) => {
       console.log(res.data);
       let userInfo = {
+<<<<<<< HEAD
         userName: res.data.users.username,
         firstName: res.data.users.firstname,
         lastName: res.data.users.lastname,
         profilePicture: res.data.users.profilephoto,
+=======
+        username: res.data.users.username,
+        firstname: res.data.users.firstname,
+        lastname: res.data.users.lastname,
+        profilephoto: res.data.users.profilephoto,
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
       }
       let eventsInfo = res.data.events;
       setUser(userInfo);
@@ -107,6 +114,7 @@ export default function MainContainer() {
     })
   }, []);
 
+<<<<<<< HEAD
   function handleUserPageChange(userName) {
     console.log('userName:', userName)
     setUserName(userName);
@@ -115,6 +123,16 @@ export default function MainContainer() {
   function handleCreateEvent(event) {
     let {title, location, date, time, description} = event;
     axios.post(`/api/create?userName=${userName}`, {title, location, date, time, description})
+=======
+  function handleUserPageChange(username) {
+    console.log('username:', username)
+    setUserName(username);
+  }
+
+  function handleCreateEvent(event) {
+    let { eventtitle, eventlocation, eventdate, eventstarttime, eventdetails} = event;
+    axios.post(`/api/create?userName=${userName}`, { eventtitle, eventlocation, eventdate, eventstarttime, eventdetails})
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
     .then((res) => {
       console.log(res.data);
       // let userInfo = {
@@ -127,12 +145,20 @@ export default function MainContainer() {
       // setUser(userInfo);
       // setEvents(eventsInfo);
     })
+<<<<<<< HEAD
+=======
+    event.attendees = [{
+      username: user.username,
+      profilephoto: user.profilephoto
+    }];
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
     const newEvents = [event].concat(events);
     console.log("updated events:", newEvents);
     setEvents(newEvents);
   }
 
   function handleSearchEvent(event) {
+<<<<<<< HEAD
     event.attendees.push(
       {
         userName: user.userName,
@@ -141,6 +167,33 @@ export default function MainContainer() {
     const newEvents = [event].concat(events);
     console.log("updated events:", newEvents);
     setEvents(newEvents);
+=======
+    console.log("Main Container:", event)
+    // ADD
+    axios.post(`/api/add?eventtitle=${event.eventtitle}`)
+    .then((res) => {
+      console.log(res.data);
+      event.attendees.push(
+      {
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        profilephoto: user.profilephoto
+      });
+      const newEvents = [event].concat(events);
+      console.log("updated events:", newEvents);
+      setEvents(newEvents);
+    })
+    // END ADD
+    // event.attendees.push(
+    //   {
+    //     username: user.username,
+    //     profilephoto: user.profilephoto
+    //   });
+    // const newEvents = [event].concat(events);
+    // console.log("updated events:", newEvents);
+    // setEvents(newEvents);
+>>>>>>> 6e2d8a0c157307bd828924eefc5dcc397114e24d
   }
     
   return (

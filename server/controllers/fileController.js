@@ -12,7 +12,7 @@ fileController.createUser = (req, res, next) => { // ADD BACK ASYNC IF YOU TURN 
 
   const queryString1 = queries.userInfo;
   const queryValues1 = [email];
-  
+
   const queryString2 = queries.addUser;
   const queryValues2 = [email, given_name, family_name, picture];
 
@@ -23,16 +23,16 @@ fileController.createUser = (req, res, next) => { // ADD BACK ASYNC IF YOU TURN 
         console.log('data.rows is empty')
         db.query(queryString2, queryValues2)
           .then(data => {
-          res.locals.username = data.rows[0].username; // is this superfluous?
-          console.log('NEW USER: ', res.locals.username);
-          return next();
+            res.locals.username = data.rows[0].username; // is this superfluous?
+            console.log('NEW USER: ', res.locals.username);
+            return next();
           })
-        .catch(err => {
-          return next({
-            log: `Error occurred with queries.addUser OR fileController.createUser middleware: ${err}`,
-            message: { err: "An error occurred with adding new user to the database." },
-          });
-        })
+          .catch(err => {
+            return next({
+              log: `Error occurred with queries.addUser OR fileController.createUser middleware: ${err}`,
+              message: { err: "An error occurred with adding new user to the database." },
+            });
+          })
       } else {
         return next();
       }
@@ -45,9 +45,9 @@ fileController.createUser = (req, res, next) => { // ADD BACK ASYNC IF YOU TURN 
     });
 };
 
-fileController.getUser = (req, res, next) => { 
+fileController.getUser = (req, res, next) => {
   let decoded;
-  if(!res.locals.token) {
+  if (!res.locals.token) {
     decoded = jwtDecode(req.cookies.user)
   } else {
     decoded = jwtDecode(res.locals.token);
@@ -79,25 +79,17 @@ fileController.getUser = (req, res, next) => {
 };
 
 fileController.verifyUser = (req, res, next) => {
-<<<<<<< HEAD
-
-  const decoded = jwtDecode(req.cookies.user);
-  const { email } = decoded;
-  // if (email === req.query.userName) {
-  if (email === 'minchanjun@gmail.com') { // =========> HARD CODED
-=======
   const decoded = jwtDecode(req.cookies.user);
   const { email } = decoded;
 
   if (email == req.query.userName) {
->>>>>>> 27ed1fa906359ff1c6a0b7658fb2ae0a667a663f
     return next();
   } else {
     return next({
       log: `Error occurred with fileController.verifyUser`,
       code: 401,
       message: { err: "Unauthorized Access." },
-    })  
+    })
   }
 }
 

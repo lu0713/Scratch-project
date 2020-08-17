@@ -50,19 +50,13 @@
     "axios": "^0.19.2",
     "bcrypt": "^5.0.0",
     "bcryptjs": "^2.4.3",
-<<<<<<< HEAD
-=======
     "bootstrap": "^4.5.2",
->>>>>>> 27ed1fa906359ff1c6a0b7658fb2ae0a667a663f
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "googleapis": "^59.0.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^2.2.0",
-<<<<<<< HEAD
-=======
     "mini-css-extract-plugin": "^0.10.0",
->>>>>>> 27ed1fa906359ff1c6a0b7658fb2ae0a667a663f
     "node-fetch": "^2.6.0",
     "pg": "^8.3.0",
     "react": "^16.13.1",
