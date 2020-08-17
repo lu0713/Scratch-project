@@ -1,0 +1,2 @@
+let minchanWedding = ['minchan wedding', '10/1/2020', '02:00 PM', '03:00 PM', 'castle', 'attend wedding', 1, 'minchanjun@gmail.com', "{'so excited for your wedding!', 'loving the location', 'sorry can\'t make it'}"]
+db.query(queries.createEvent, minchanWedding).then(data => console.log(data.rows));

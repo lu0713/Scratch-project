@@ -2,8 +2,8 @@ const db = require("../models/models");
 const queries = require("../utils/queries");
 const eventController = {};
 
-eventController.getFullEvents = (req, res, next) => { 
-  
+eventController.getFullEvents = (req, res, next) => {
+
   const queryString = queries.userEvents;
   const queryValues = [res.locals.allUserInfo.userid]; //user will have to be verified Jen / Minchan
   db.query(queryString, queryValues)
@@ -38,7 +38,7 @@ eventController.createEvent = (req, res, next) => {
 };
 
 // NEED TO ADD THIS IN MIDDLEWARE AFTER eventController.createEven
-eventController.addToUsersAndEvents; // JEN ADDED THIS
+eventController.addAllEventsToUSERSANDEVENTS; // JEN ADDED THIS
 
 eventController.addEvent = (req, res, next) => {
   // Insert logic
