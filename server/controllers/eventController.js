@@ -193,37 +193,69 @@ eventController.addAttendee = (req, res, next) => {
     })
 };
 
-eventController.allEvents = (req, res, next) => {
+// eventController.allEvents = (req, res, next) => {
 
-  const queryString = queries.getAllEvents;
+//   const queryString = queries.getAllEvents;
 
-  db.query(queryString)
-    .then(data => {
-      if (!data.rows) {
-        res.locals.allEventsInfo = [];
-      } else {
-        console.log('eventData', data.rows)
-        const eventAndUserDataQueryString = queries.getAttendeeEvents;
-        db.query(eventAndUserDataQueryString).then(eventAndUserData => {
-          console.log('eventAndUserData', eventAndUserData.rows)
-          const mergedTable = data.rows.map(e => {
-            const attendees = eventAndUserData.rows.filter(entry => entry.eventid == e.eventid)
-            e.attendees = attendees;
-            return e;
-          })
-          res.locals.allEventsInfo = mergedTable
-          console.log("merged table", res.locals.allEventsInfo)
-          return next();
-        })
-      }
+//   db.query(queryString)
+//     .then(data => {
+//       if (!data.rows) {
+//         res.locals.allEventsInfo = [];
+//       } else {
+//         console.log('eventData', data.rows)
+//         const eventAndUserDataQueryString = queries.getAttendeeEvents;
+//         db.query(eventAndUserDataQueryString).then(eventAndUserData => {
+//           console.log('eventAndUserData', eventAndUserData.rows)
+//           const mergedTable = data.rows.map(e => {
+//             const attendees = eventAndUserData.rows.filter(entry => entry.eventid == e.eventid)
+//             e.attendees = attendees;
+//             return e;
+//           })
+//           res.locals.allEventsInfo = mergedTable
+//           console.log("merged table", res.locals.allEventsInfo)
+//           return next();
+//         })
+//       }
+
+//     })
+//     .catch(err => {
+//       return next({
+//         log: `Error occurred with queries.getAllEvents OR eventController.allEvents middleware: ${err}`,
+//         message: { err: "An error occured with SQL when retrieving all events information." },
+//       });
+//     })
+// };
+
+eventController.allEvents = async (req, res, next) => {
+  try {
+    const queryString = queries.getAllEvents;
+    const eventAndUserDataQueryString = queries.getAttendeeEvents;
+    const queryString3 = queries.getMessages;
+    const events = await db.query(queryString)
+    const attendees = await db.query(eventAndUserDataQueryString)
+    const messages = await db.query(queryString3)
+
+
+
+
+    const mergedTable = data.rows.map(e => {
+      const attendees = eventAndUserData.rows.filter(entry => entry.eventid == e.eventid)
+      e.attendees = attendees;
+      return e;
+    })
+    res.locals.allEventsInfo = mergedTable
+    console.log("merged table", res.locals.allEventsInfo)
+    return next();
+  })
+}
 
     })
-    .catch(err => {
-      return next({
-        log: `Error occurred with queries.getAllEvents OR eventController.allEvents middleware: ${err}`,
-        message: { err: "An error occured with SQL when retrieving all events information." },
-      });
-    })
+  } catch (err => {
+  return next({
+    log: `Error occurred with queries.getAllEvents OR eventController.allEvents middleware: ${err}`,
+    message: { err: "An error occured with SQL when retrieving all events information." },
+  });
+})
 };
 
 
