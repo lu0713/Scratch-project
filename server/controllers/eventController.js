@@ -78,13 +78,10 @@ eventController.createEvent = (req, res, next) => {
   const { userid, username } = res.locals.allUserInfo;
 
   const queryString = queries.createEvent;
-  // const queryValues = [ eventtitle, eventdate, eventstarttime, eventendtime, eventlocation, eventdetails, userid, username, [] ];
-  // <<<<<<< HEAD
+  // const queryValues = [ eventtitle, eventdate, eventstarttime, eventendtime, eventlocation, eventdetails, userid, username, {} ];
   //   const queryValues = ['minchan birthday', '9/15/2020', '06:00 PM', '09:00 PM', 'golf course', 'play minigolf birthday', userid, username, "{'hey when is it again', 'happy birthday!', 'sorry can\'t make it'}"]
   //   db.query(queryString, queryValues)
   //     .then(data => {
-  // =======
-  // const queryValues = ['minchan birthday', '9/15/2020', '06:00 PM', '09:00 PM', 'golf course', 'play minigolf birthday', userid, username, "{}"]
   let { eventtitle, eventlocation, eventdate, eventstarttime, eventdetails } = req.body;
   console.log('eventController.createEvent ', req.body);
   const queryValues = [eventtitle, eventdate, eventstarttime, eventstarttime, eventlocation, eventdetails, userid, username, "{}"];
@@ -109,6 +106,7 @@ eventController.addNewEventToJoinTable = (req, res, next) => {
   const queryValues = [res.locals.eventID.eventid]
   db.query(queryString, queryValues)
     .then(data => {
+      // WE DON'T ACTUALLY USE THIS ANYWHERE - FOR DEBUGGING AND TESTING ONLY
       res.locals.usersandevents = data.rows[0];
       return next();
     })
@@ -122,13 +120,10 @@ eventController.addNewEventToJoinTable = (req, res, next) => {
 };
 
 eventController.verifyAttendee = (req, res, next) => {
-  const title = req.query.eventtitle; // verify with frontend
-
+  const title = req.query.eventtitle;
   const { username } = res.locals.allUserInfo
-
   const queryString = queries.selectEventAttendees;
   const queryValues = [title];
-
   db.query(queryString, queryValues)
     .then(data => {
       console.log('data: ', data);
@@ -228,8 +223,6 @@ eventController.addAttendee = (req, res, next) => {
 // };
 
 eventController.allEvents = async (req, res, next) => {
-  res.local.allEventsInfo = [];
-
   try {
     const queryString1 = queries.getAllEvents;
     const queryString2 = queries.getEventAllAttendees;
@@ -238,21 +231,26 @@ eventController.allEvents = async (req, res, next) => {
     const attendees = await db.query(queryString2)
     const messages = await db.query(queryString3)
 
-    console.log('events: ', events);
-    console.log('attendees: ', attendees);
-    console.log('messages: ', messages);
+    console.log('========> events.rows: ', events.rows);
+    console.log('========> attendees.rows: ', attendees.rows);
+    console.log('========> messages.rows: ', messages.rows);
 
-    events.forEach((event, i) => {
-      const eventAttendeeList = attendees.filter(entry => entry.eventid === event.eventid);
-      event.attendees = eventAttendeeList;
+    if (!events.rows) res.locals.allEventsInfo = [];
+    else {
+      events.rows.forEach((eventObj, i) => {
+        const eventAttendeeList = attendees.rows.filter(userObj => userObj.eventid == eventObj.eventid);
+        console.log('eventAttendeeList: ', eventAttendeeList)
+        eventObj.attendees = eventAttendeeList;
+        console.log('eventObj: ', eventObj)
 
-      const eventMessageList = messages.filter(entry => entry.eventid === event.eventid);
-      event.content = eventMessageList
-    })
-
-    console.log('events after insertion of attendees & messages: ', events);
-    res.locals.allEventsInfo = events;
-    console.log("merged table", res.locals.allEventsInfo)
+        const eventMessageList = messages.rows.filter(messageObj => messageObj.eventtitle == eventObj.eventtitle);
+        console.log('eventMessageList: ', eventMessageList)
+        eventObj.content = eventMessageList
+        console.log('eventObj: ', eventObj)
+      })
+      res.locals.allEventsInfo = events.rows;
+      console.log('events after insertion of attendees & messages: ', events.rows);
+    }
     return next();
   } catch (err) {
     return next({
@@ -329,107 +327,6 @@ eventController.filterForUser = (req, res, next) => {
 
 eventController.getMessages = (req, res, next) => {
 
-  /**
- * [
-  {
-    userid: 1,
-    username: 'minchanjun@gmail.com',
-    profilephoto: 'https://lh3.googleusercontent.com/a-/AOh14GiCfRjVHS4vAoB3p62KOZdaUAxP6UvDZVpBoNUU9g=s96-c',
-    eventtitle: 'Minchan Birthday',
-    messagetext: 'so excited to see everyone at my birthday',
-    messagedate: 2020-08-18T04:00:00.000Z,
-    messagetime: '10:00:01'
-  },
-  {
-    userid: 4,
-    username: 'lumie.song@gmail.com',
-    profilephoto: 'https://lh3.googleusercontent.com/a-/AOh14Gg93pDy8jrAZOTlp5Q3LZP_nPEWTNSdfNYtII92=s96-c',
-    eventtitle: 'Minchan Birthday',
-    messagetext: 'Custom Message Text',
-    messagedate: 2020-08-17T04:00:00.000Z,
-    messagetime: '05:00:01'
-  }
-]
- */
-  const queryString = queries.getAllEvents;
-  db.query(queryString)
-    .then(data => {
-      if (!data.rows) {
-        res.locals.allEventsInfo = [];
-      } else {
-        console.log('eventData', data.rows)
-        const eventMessages = queries.getMessages;
-        db.query(eventMessages)
-          .then(eventMessageData => {
-            console.log('eventMessageData', eventMessageData.rows)
-            const newMergedTable = data.rows.map(messageObj => {
-              const messages = eventMessageData.rows.filter(entry => entry.eventtitle == messageObj.eventtitle)
-              messageObj.content = messages;
-              return messageObj;
-            });
-            res.locals.allEventsInfo = newMergedTable
-            console.log("merged table", res.locals.allEventsInfo)
-            return next();
-          })
-      }
-    })
-
-    .catch(err => {
-      return next({
-        log: `Error occurred with queries.getAllEvents OR eventController.allEvents middleware: ${err}`,
-        message: { err: "An error occured with SQL when retrieving all events information." },
-      });
-    })
-
-
-  // let allEventTitles = [];
-  // const allEvents = res.locals.allEventsInfo;
-
-  // for (let i = 0; i < allEvents.length; i++) {
-  //   allEventTitles.push(allEvents[i].eventtitle)
-  // }
-  // console.log('allEventTitles: ', allEventTitles);
-
-  // for (let i = 0; i < allEventTitles.length; i++) {
-  //   const queryString = queries.getMessages;
-  //   const queryValues = [allEventTitles[i]];
-  // }
-
-
-
-  // let desiredEventObj;
-  // let desiredEventObjIndex;
-
-  // for (let j = 0; j < allEvents.length; j++) {
-  //   let eventObj = allEvents[j];
-  //   if (eventObj.eventtitle === eventtitle) {
-  //     desiredEventObj = eventObj;
-  //     console.log('desiredEventObj: ', desiredEventObj)
-  //     desiredEventObjIndex = j;
-  //     console.log('desiredEventObjIndex: ', desiredEventObjIndex)
-  //   }
-  // }
-
-  // getMessages, eventtitle
-  // db.query(queryString, queryValues)
-  //   .then(data => {
-  //     if (data.rows[0]) {
-  //       for (let i = 0; i < data.rows.length; i++) {
-  //         let messageObj = data.rows[i];
-  //         if (messageObj.eventtitle === eventtitle) {
-  //           desiredEventObj.push(messageObj)
-  //         }
-  //       }
-  //       res.locals.allEventsInfo[desiredEventObjIndex] = desiredEventObjIndex;
-  //       console.log('res.locals.allEventsInfo: ', res.locals.allEventsInfo)
-  //     }
-  //   })
-  //   .catch(err => {
-  //     return next({
-  //       log: `Error occurred with queries.getAllEvents OR eventController.allEvents middleware: ${err}`,
-  //       message: { err: "An error occured with SQL when retrieving all events information." },
-  //     });
-  //   })
 };
 
 

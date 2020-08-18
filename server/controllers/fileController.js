@@ -16,12 +16,12 @@ fileController.createUser = (req, res, next) => { // ADD BACK ASYNC IF YOU TURN 
   const queryString2 = queries.addUser;
   const queryValues2 = [email, given_name, family_name, picture];
 
-  db.query(queryString1, queryValues1)
+  db.query(queryString1, queryValues1) // does user exist?
     .then(data => {
       console.log('whole data:', data);
       if (!data.rows.length) {
         console.log('data.rows is empty')
-        db.query(queryString2, queryValues2)
+        db.query(queryString2, queryValues2) // create user
           .then(data => {
             res.locals.username = data.rows[0].username; // is this superfluous?
             console.log('NEW USER: ', res.locals.username);
@@ -48,14 +48,15 @@ fileController.createUser = (req, res, next) => { // ADD BACK ASYNC IF YOU TURN 
 fileController.getUser = (req, res, next) => {
   let decoded;
   if (!res.locals.token) {
-    decoded = jwtDecode(req.cookies.user)
+    decoded = jwtDecode(req.cookies.user) //if logged in, left page and came back, check for jwt in cookies
   } else {
-    decoded = jwtDecode(res.locals.token);
+    decoded = jwtDecode(res.locals.token); //just logged in.  token will be in locals
   }
 
   const { email } = decoded;
 
-  let targetUser;
+  // EXISTS IN CASE YOU WANT TO VISIT SOMEONE ELSE'S PROFILE PAGE // NOT CURRENTLY ENABLED 
+  let targetUser; //ignore row 58-63 for now
   if (req.query.userName) {
     targetUser = req.query.userName // this is in the event that user visits someone else' profile page
   } else {
@@ -63,7 +64,7 @@ fileController.getUser = (req, res, next) => {
   }
 
   const queryString = queries.userInfo;
-  const queryValues = [targetUser]; //user will have to be verified Jen / Minchan
+  const queryValues = [targetUser];
   db.query(queryString, queryValues)
     .then(data => {
       console.log('data.rows[0]', data.rows[0]);
@@ -78,7 +79,7 @@ fileController.getUser = (req, res, next) => {
     })
 };
 
-fileController.verifyUser = (req, res, next) => {
+fileController.verifyUser = (req, res, next) => { // currently not implemented
   const decoded = jwtDecode(req.cookies.user);
   const { email } = decoded;
 

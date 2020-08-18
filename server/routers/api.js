@@ -81,7 +81,6 @@ router.post('/add',
 
 router.get('/events', // SWITCH THIS TO A GET REQUEST!!
   eventController.allEvents,
-  // eventController.getMessages, // ADDING IN MESSAGES
   (req, res) => {
     return res.status(200).json(res.locals.allEventsInfo);
   }

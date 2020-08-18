@@ -68,16 +68,6 @@ RETURNING eventid
 
 
 
-// ============== BELOW TESTS DON'T ACCOUNT FOR MESSSAGES ===============
-// let marcBirthday = ['marc birthday', '9/1/2020', '02:00 PM', '08:00 PM', 'Mohegan Sun', 'birthday parteeee', 2, 'marc123']
-// let stellaWedding = ['stella wedding', '2/3/2021', '05:00 PM', '08:00 PM', 'Castle in Ireland', 'weddingggg', 1, 'stella123']
-// let stellaBirthday = ['stella birthday', '2/3/2021', '02:00 PM', '04:00 PM', 'Bunny Bunny', 'bussday', 1, 'stella123'];
-// db.query(queries.createEvent, marcBirthday).then(data => console.log(data.rows));
-// db.query(queries.createEvent, stellaWedding).then(data => console.log(data.rows));;
-// db.query(queries.createEvent, stellaBirthday).then(data => console.log(data.rows));;
-
-
-
 // ADDS ALL CURRENT EVENTS TO USERSANDEVENTS
 queries.addNewEventToJoinTable = `
 INSERT INTO usersandevents (userid, username, eventid, eventtitle, eventdate, eventstarttime, eventendtime, eventdetails, eventlocation)
@@ -189,7 +179,7 @@ function getAllEventsUsersMessages() {
   allEvents();
 }
 
-getAllEventsUsersMessages();
+// getAllEventsUsersMessages();
 
 
 module.exports = queries;
