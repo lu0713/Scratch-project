@@ -1,4 +1,4 @@
-const db = require("../models/models.js"); // remove after testing
+const db = require("../models/models.js");
 
 const queries = {};
 
@@ -7,7 +7,8 @@ queries.getAllEvents = `
 SELECT * FROM events
 `;
 
-queries.getAttendeeEvents = `
+// GET ALL ATTENDEES FOR EVENT
+queries.getEventAllAttendees = `
 SELECT u.*, ue.eventid
 FROM usersandevents ue
 JOIN users u
@@ -84,8 +85,15 @@ SELECT eventownerid, eventownerusername, eventid, eventtitle, eventdate, eventst
 WHERE eventid=$1
 RETURNING usersandevents;
 `;
-
-// db.query(queries.addNewEventToJoinTable).then(data => console.log(data.rows));
+// ====================== FOR TESTING ONLY ======================
+// ====================== FOR TESTING ONLY ======================
+// ====================== FOR TESTING ONLY ======================
+queries.addNewEventToUsersAndEvents = `
+INSERT INTO usersandevents (userid, username, eventid, eventtitle, eventdate, eventstarttime, eventendtime, eventdetails, eventlocation)
+SELECT eventownerid, eventownerusername, eventid, eventtitle, eventdate, eventstarttime, eventendtime, eventdetails, eventlocation FROM events
+RETURNING usersandevents;
+`;
+// db.query(queries.addNewEventToUsersAndEvents).then(data => console.log(data.rows));
 
 
 // USERS ADDS THEMSELVES TO OTHER PEOPLE'S EVENTS
@@ -95,7 +103,7 @@ VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING eventid
 ;
 `;
-// let marcAttendingMinchanBirthday = [2, 'marcaburnie@gmail.com', 1, 'minchan birthday'];
+// let marcAttendingMinchanBirthday = [2, 'marcaburnie@gmail.com', 1, 'minchan birthday', '2020-09-15', '18:00:00', '21:00:00', 'play minigolf birthday', 'golf course'];
 // db.query(queries.addUserToEvent, marcAttendingMinchanBirthday).then(data => console.log(data.rows));;
 
 
@@ -103,26 +111,30 @@ RETURNING eventid
 // queries.selectEventAttendees = `SELECT * FROM usersandevents WHERE eventtitle=$1`;
 queries.selectEventAttendees = `SELECT * FROM usersandevents WHERE eventtitle=$1`;
 
-// let minchanWeddingTitle = ['Minchan Birthday'];
-// db.query(queries.selectEventAttendees, minchanWeddingTitle).then(data => console.log(data.rows));
+// let minchanBirthdayEventTitle = ['minchan birthday'];
+// db.query(queries.selectEventAttendees, minchanBirthdayEventTitle).then(data => console.log(data.rows));
 
 
-queries.addComments = `
-INSERT INTO eventsandmessages (username, eventtitle, messagetext, messagedate, messagetime)
-VALUES($1, $2, $3, $4, $5)
-WHERE eventtitle=$2 AND username=$1
+queries.addMessageToEvent = `
+INSERT INTO eventsandmessages (userid, username, eventid, eventtitle, messagetext, messagedate, messagetime)
+VALUES($1, $2, $3, $4, $5, $6, $7)
+RETURNING eventsandmessages
 `;
 
-/**
-INSERT INTO eventsandmessages (username, eventtitle, messagetext, messagedate, messagetime)
-VALUES('lumie.song@gmail.com', 'Minchan Birthday', 'Custom Message Text', '2020-08-17', '05:00:01')
+// let marcCommentingOnMinchanBday = [2, 'marcaburnie@gmail.com', 1, 'minchan birthday', 'happy birthday dude, from marc', '2020-08-17', '05:00:01']
+// db.query(queries.addMessageToEvent, marcCommentingOnMinchanBday)
 
-INSERT INTO eventsandmessages (username, eventtitle, messagetext, messagedate, messagetime)
-VALUES('minchanjun@gmail.com', 'Minchan Birthday', 'so excited to see everyone at my birthday', '2020-08-18', '10:00:01')
- */
+// let minchanCommentingOnMinchanBday = [1, 'minchanjun@gmail.com', 1, 'minchan birthday', 'so excited to see everyone at my birthday', '2020-08-18', '10:00:01']
+// db.query(queries.addMessageToEvent, minchanCommentingOnMinchanBday)
+
+// let minchanCommentingOnMinchanWedding = [1, 'minchanjun@gmail.com', 2, 'minchan wedding', 'my wedding is gonna be LIT', '2020-10-18', '12:30:00']
+// db.query(queries.addMessageToEvent, minchanCommentingOnMinchanWedding)
+
+// let minchanCommentingOnMarcBday = [1, 'minchanjun@gmail.com', 3, 'marc birthday', 'happy birthday marc!', '2020-11-12', '14:30:00']
+// db.query(queries.addMessageToEvent, minchanCommentingOnMarcBday)
 
 // GET COMMENTS FOR EVENTS
-queries.getMessages = `
+queries.getEventMessages = `
 SELECT u.userid, u.username, u.profilephoto, em.eventtitle, em.messagetext, em.messagedate, em.messagetime
 FROM users u
 JOIN eventsandmessages em
@@ -139,5 +151,45 @@ DROP TABLE usersandevents;
 DROP TABLE events;
 DROP TABLE users;
 `;
+
+function getAllEventsUsersMessages() {
+  const allEvents = async function (req, res, next) {
+    try {
+      const queryString1 = queries.getAllEvents;
+      const queryString2 = queries.getEventAllAttendees;
+      const queryString3 = queries.getEventMessages;
+      const events = await db.query(queryString1)
+      const attendees = await db.query(queryString2)
+      const messages = await db.query(queryString3)
+
+      console.log('========> events.rows: ', events.rows);
+      console.log('========> attendees.rows: ', attendees.rows);
+      console.log('========> messages.rows: ', messages.rows);
+
+      events.rows.forEach((eventObj, i) => {
+        const eventAttendeeList = attendees.rows.filter(userObj => userObj.eventid == eventObj.eventid);
+        console.log('eventAttendeeList: ', eventAttendeeList)
+        eventObj.attendees = eventAttendeeList;
+        console.log('eventObj: ', eventObj)
+
+        const eventMessageList = messages.rows.filter(messageObj => messageObj.eventtitle == eventObj.eventtitle);
+        console.log('eventMessageList: ', eventMessageList)
+        eventObj.content = eventMessageList
+        console.log('eventObj: ', eventObj)
+      })
+
+      console.log('events after insertion of attendees & messages: ', events.rows);
+      // res.locals.allEventsInfo = events.rows;
+      // console.log("res.locals.allEventsInfo", res.locals.allEventsInfo)
+      return events.rows;
+    } catch (err) {
+      console.log(err);
+    };
+  }
+  allEvents();
+}
+
+getAllEventsUsersMessages();
+
 
 module.exports = queries;

@@ -1,5 +1,6 @@
 const db = require("../models/models");
 const queries = require("../utils/queries");
+const e = require("express");
 const eventController = {};
 
 eventController.getFullEvents = (req, res, next) => {
@@ -227,36 +228,39 @@ eventController.addAttendee = (req, res, next) => {
 // };
 
 eventController.allEvents = async (req, res, next) => {
+  res.local.allEventsInfo = [];
+
   try {
-    const queryString = queries.getAllEvents;
-    const eventAndUserDataQueryString = queries.getAttendeeEvents;
-    const queryString3 = queries.getMessages;
-    const events = await db.query(queryString)
-    const attendees = await db.query(eventAndUserDataQueryString)
+    const queryString1 = queries.getAllEvents;
+    const queryString2 = queries.getEventAllAttendees;
+    const queryString3 = queries.getEventMessages;
+    const events = await db.query(queryString1)
+    const attendees = await db.query(queryString2)
     const messages = await db.query(queryString3)
 
+    console.log('events: ', events);
+    console.log('attendees: ', attendees);
+    console.log('messages: ', messages);
 
+    events.forEach((event, i) => {
+      const eventAttendeeList = attendees.filter(entry => entry.eventid === event.eventid);
+      event.attendees = eventAttendeeList;
 
-
-    const mergedTable = data.rows.map(e => {
-      const attendees = eventAndUserData.rows.filter(entry => entry.eventid == e.eventid)
-      e.attendees = attendees;
-      return e;
+      const eventMessageList = messages.filter(entry => entry.eventid === event.eventid);
+      event.content = eventMessageList
     })
-    res.locals.allEventsInfo = mergedTable
+
+    console.log('events after insertion of attendees & messages: ', events);
+    res.locals.allEventsInfo = events;
     console.log("merged table", res.locals.allEventsInfo)
     return next();
-  })
+  } catch (err) {
+    return next({
+      log: `Error occurred with queries.getAllEvents OR eventController.allEvents middleware: ${err}`,
+      message: { err: "An error occured with SQL when retrieving all events information." },
+    });
+  };
 }
-
-    })
-  } catch (err => {
-  return next({
-    log: `Error occurred with queries.getAllEvents OR eventController.allEvents middleware: ${err}`,
-    message: { err: "An error occured with SQL when retrieving all events information." },
-  });
-})
-};
 
 
 eventController.getUserDetail = (req, res, next) => {

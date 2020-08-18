@@ -58,28 +58,32 @@ CREATE TABLE events
     "eventlocation" varchar NOT NULL,
     UNIQUE (username, eventtitle),
     FOREIGN KEY ( userid ) REFERENCES users ( userid ),
-    FOREIGN KEY ( eventid ) REFERENCES events ( eventid )
+    FOREIGN KEY ( username ) REFERENCES users( username ),
+    FOREIGN KEY ( eventid ) REFERENCES events ( eventid ),
+    FOREIGN KEY ( eventtitle ) REFERENCES events ( eventtitle )
   );
 
 
   SELECT setval('usersandevents_uselessid_seq', 1, false);
 
 
+  CREATE TABLE eventsandmessages
+  (
+    "uselessid" serial PRIMARY KEY,
+    "userid" bigint NOT NULL,
+    "username" varchar NOT NULL,
+    "eventid" bigint NOT NULL,
+    "eventtitle" varchar NOT NULL,
+    "messagetext" varchar,
+    "messagedate" date NOT NULL,
+    "messagetime" time NOT NULL,
+    FOREIGN KEY ( userid ) REFERENCES users ( userid ),
+    FOREIGN KEY ( username ) REFERENCES users ( username ),
+    FOREIGN KEY ( eventid ) REFERENCES events ( eventid ),
+    FOREIGN KEY ( eventtitle ) REFERENCES events ( eventtitle )
+  );
 
--- CREATE TABLE eventsandmessages
---   (
---     "uselessid" serial PRIMARY KEY,
---     "username" varchar NOT NULL,
---     "eventtitle" varchar NOT NULL,
---     "messagetext" varchar,
---     "messagedate" date NOT NULL,
---     "messagetime" time NOT NULL,
---     FOREIGN KEY ( username ) REFERENCES users ( username ),
---     FOREIGN KEY ( eventtitle ) REFERENCES events ( eventtitle )
---   );
-
-
---   SELECT setval('eventsandmessages_uselessid_seq', 1, false);
+  SELECT setval('eventsandmessages_uselessid_seq', 1, false);
 
 
 -- DROP TABLE EVENTSANDMESSAGES;
