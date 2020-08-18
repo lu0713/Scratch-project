@@ -127,7 +127,6 @@ SELECT u.userid, u.username, u.profilephoto, em.eventtitle, em.messagetext, em.m
 FROM users u
 JOIN eventsandmessages em
 ON u.username=em.username
-WHERE em.eventtitle=$1
 `;
 // WHERE em.eventtitle=$1
 // let minchanBirthdayEventTitle = ['Minchan Birthday'];
